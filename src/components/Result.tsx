@@ -73,8 +73,10 @@ export class Result extends React.Component<ResultProps, ResultState> {
         
         return (
             <li className="result" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                <a href={this.props.data.images.original.mp4}>
                 { showAndPlayVideo ? video() : null }
                 { img() }
+                </a>
             </li>
         )
     } 

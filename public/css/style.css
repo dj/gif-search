@@ -9,6 +9,11 @@ body {
     font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
 }
 
+img,
+video {
+    cursor: pointer;
+}
+
 .page-container {
     max-width: 1180px;
     margin: 0 auto;
@@ -62,6 +67,24 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.search label {
+    margin-bottom: 3px;
+    display: block;
+}
+
+.search input {
+    margin-right: 5px;
+}
+
+.search fieldset {
+    border: none;
+}
+
+.results-footer {
+    margin: 50px 0;
+    text-align: center;
 }
 
 @media (min-width: 400px) {

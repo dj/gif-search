@@ -35,6 +35,17 @@ export interface Gif {
             webp: string
             webp_size: string
         }
+        original: {
+            url: string
+            width: string
+            height: string
+            size: string
+            frames: string
+            mp4: string
+            mp4_size: string
+            webp: string
+            webp_size: string
+        }
     }
 }
 
@@ -54,7 +65,7 @@ export class Search {
     }
 
     private querystring() {
-        let qs = `q=${encodeURIComponent(this.q)}&api_key=${publicKey}`
+        let qs = `q=${encodeURIComponent(this.q)}&api_key=${publicKey}&rating=pg`
         if ( this.limit ) qs += `&limit=${this.limit}`
         if ( this.fmt ) qs += `&fmt=${this.fmt}`
         if ( this.offset ) qs += `&offset=${this.offset}`

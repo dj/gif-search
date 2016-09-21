@@ -20,6 +20,7 @@ export class App extends React.Component<AppProps, AppState> {
         this.onSubmit = this.onSubmit.bind(this)
         this.loadMore = this.loadMore.bind(this)
         this.toggleAutoplay = this.toggleAutoplay.bind(this)
+        this.loadMoreButton = this.loadMoreButton.bind(this)
 
         this.state = { 
             input: "",  
@@ -69,14 +70,14 @@ export class App extends React.Component<AppProps, AppState> {
         const search = new Search({ 
             q: this.state.input,
             limit: limit,
-            offset: this.state.offset + 1
+            offset: this.state.offset - 2
         })
 
         search.send().then(function (results: Gif[]) {
             self.setState({
                 input: self.state.input,
                 results: self.state.results.concat(results),
-                offset: self.state.offset + limit + 1,
+                offset: self.state.offset + limit,
                 autoplay: self.state.autoplay,
             })
         })
@@ -91,23 +92,37 @@ export class App extends React.Component<AppProps, AppState> {
         })
     }
 
+    private loadMoreButton() {
+        if ( this.state.results.length ) {
+            return <button class="load-more" href="#" onClick={ e => this.loadMore(e) }>Load More</button>   
+        }
+    }
+
     render() {
         return (
             <div className="app">
-                <form className="chat-input" onSubmit={ e => this.onSubmit(e) }>
-                    <input type="text" 
-                        value={ this.state.input } 
-                        onChange={ e => this.onChange(e) } 
-                        autoComplete="off" id="msg"/>
-                    <input type="submit" value="Search" />
-                    <input type="checkbox"
-                        defaultChecked={this.state.autoplay} 
-                        onChange={this.toggleAutoplay} />
+                <form className="search" onSubmit={ e => this.onSubmit(e) }>
+                    <fieldset>
+                        <label for="search-terms">Search Terms</label>
+                        <input type="text" 
+                            name="search-terms"
+                            value={ this.state.input } 
+                            onChange={ e => this.onChange(e) } 
+                            autoComplete="off" id="msg"/>
+                        <input type="submit" value="Search" />
+                    </fieldset>
+                    <fieldset>
+                        <label><input type="checkbox"
+                            defaultChecked={this.state.autoplay} 
+                            onChange={this.toggleAutoplay} />Autoplay results?</label>
+                    </fieldset>
                 </form>
                 <ul className="result-list">
                     { this.state.results.map((res, i) => <Result autoplay={this.state.autoplay} data={res} key={i}/>) }
                 </ul>
-                <a href="#" onClick={ e => this.loadMore(e) }>Load More</a>
+                <div className="results-footer">
+                    { this.loadMoreButton() }
+                </div>
             </div>
         )
     }
