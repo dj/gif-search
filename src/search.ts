@@ -1,4 +1,4 @@
-const baseUrl = "http://api.giphy.com/v1/gifs/search"
+const baseUrl = "https://api.giphy.com/v1/gifs/search"
 // Testing only
 const publicKey = "dc6zaTOxFJmzC"
 
