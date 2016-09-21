@@ -10,19 +10,22 @@ export interface AppState {
     input: string
     results: Gif[]
     offset: number
+    autoplay: boolean
 }
 
 export class App extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
         super(props)
-        this.onChange.bind(this)
-        this.onSubmit.bind(this)
-        this.loadMore.bind(this)
+        this.onChange = this.onChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
+        this.loadMore = this.loadMore.bind(this)
+        this.toggleAutoplay = this.toggleAutoplay.bind(this)
 
         this.state = { 
             input: "",  
             results: [], 
-            offset: 12
+            offset: 12,
+            autoplay: false,
         }
     }
 
@@ -32,7 +35,8 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState({
             input: input,
             results: this.state.results,
-            offset: this.state.offset
+            offset: this.state.offset,
+            autoplay: this.state.autoplay,
         })
     }
 
@@ -49,7 +53,8 @@ export class App extends React.Component<AppProps, AppState> {
             self.setState({
                 input: self.state.input,
                 results: results,
-                offset: self.state.offset
+                offset: self.state.offset,
+                autoplay: self.state.autoplay,
             })
         })
     }
@@ -71,8 +76,18 @@ export class App extends React.Component<AppProps, AppState> {
             self.setState({
                 input: self.state.input,
                 results: self.state.results.concat(results),
-                offset: self.state.offset + limit + 1
+                offset: self.state.offset + limit + 1,
+                autoplay: self.state.autoplay,
             })
+        })
+    }
+
+    toggleAutoplay() {
+        this.setState({
+            input: this.state.input,
+            results: this.state.results,
+            offset: this.state.offset,
+            autoplay: !this.state.autoplay,
         })
     }
 
@@ -85,9 +100,12 @@ export class App extends React.Component<AppProps, AppState> {
                         onChange={ e => this.onChange(e) } 
                         autoComplete="off" id="msg"/>
                     <input type="submit" value="Search" />
+                    <input type="checkbox"
+                        defaultChecked={this.state.autoplay} 
+                        onChange={this.toggleAutoplay} />
                 </form>
                 <ul className="result-list">
-                    { this.state.results.map((res, i) => <Result data={res} key={i}/>) }
+                    { this.state.results.map((res, i) => <Result autoplay={this.state.autoplay} data={res} key={i}/>) }
                 </ul>
                 <a href="#" onClick={ e => this.loadMore(e) }>Load More</a>
             </div>

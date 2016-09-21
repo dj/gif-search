@@ -21881,13 +21881,15 @@
 	class App extends React.Component {
 	    constructor(props) {
 	        super(props);
-	        this.onChange.bind(this);
-	        this.onSubmit.bind(this);
-	        this.loadMore.bind(this);
+	        this.onChange = this.onChange.bind(this);
+	        this.onSubmit = this.onSubmit.bind(this);
+	        this.loadMore = this.loadMore.bind(this);
+	        this.toggleAutoplay = this.toggleAutoplay.bind(this);
 	        this.state = {
 	            input: "",
 	            results: [],
-	            offset: 12
+	            offset: 12,
+	            autoplay: false,
 	        };
 	    }
 	    onChange(e) {
@@ -21895,7 +21897,8 @@
 	        this.setState({
 	            input: input,
 	            results: this.state.results,
-	            offset: this.state.offset
+	            offset: this.state.offset,
+	            autoplay: this.state.autoplay,
 	        });
 	    }
 	    onSubmit(e) {
@@ -21909,7 +21912,8 @@
 	            self.setState({
 	                input: self.state.input,
 	                results: results,
-	                offset: self.state.offset
+	                offset: self.state.offset,
+	                autoplay: self.state.autoplay,
 	            });
 	        });
 	    }
@@ -21927,12 +21931,21 @@
 	            self.setState({
 	                input: self.state.input,
 	                results: self.state.results.concat(results),
-	                offset: self.state.offset + limit + 1
+	                offset: self.state.offset + limit + 1,
+	                autoplay: self.state.autoplay,
 	            });
 	        });
 	    }
+	    toggleAutoplay() {
+	        this.setState({
+	            input: this.state.input,
+	            results: this.state.results,
+	            offset: this.state.offset,
+	            autoplay: !this.state.autoplay,
+	        });
+	    }
 	    render() {
-	        return (React.createElement("div", {className: "app"}, React.createElement("form", {className: "chat-input", onSubmit: e => this.onSubmit(e)}, React.createElement("input", {type: "text", value: this.state.input, onChange: e => this.onChange(e), autoComplete: "off", id: "msg"}), React.createElement("input", {type: "submit", value: "Search"})), React.createElement("ul", {className: "result-list"}, this.state.results.map((res, i) => React.createElement(Result_1.Result, {data: res, key: i}))), React.createElement("a", {href: "#", onClick: e => this.loadMore(e)}, "Load More")));
+	        return (React.createElement("div", {className: "app"}, React.createElement("form", {className: "chat-input", onSubmit: e => this.onSubmit(e)}, React.createElement("input", {type: "text", value: this.state.input, onChange: e => this.onChange(e), autoComplete: "off", id: "msg"}), React.createElement("input", {type: "submit", value: "Search"}), React.createElement("input", {type: "checkbox", defaultChecked: this.state.autoplay, onChange: this.toggleAutoplay})), React.createElement("ul", {className: "result-list"}, this.state.results.map((res, i) => React.createElement(Result_1.Result, {autoplay: this.state.autoplay, data: res, key: i}))), React.createElement("a", {href: "#", onClick: e => this.loadMore(e)}, "Load More")));
 	    }
 	}
 	exports.App = App;
@@ -22010,16 +22023,14 @@
 	        });
 	    }
 	    render() {
-	        if (this.state.hover) {
-	            let style = {
-	                visibility: this.state.videoLoaded ? "visible" : "hidden"
-	            };
-	            console.log(style);
-	            return (React.createElement("li", {className: "result", onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave, style: style}, React.createElement("video", {autoPlay: true, loop: true, className: "result__video", onLoadedData: this.onVideoLoaded, width: this.props.data.images.fixed_height.width, height: this.props.data.images.fixed_height.height, src: this.props.data.images.fixed_height.mp4})));
-	        }
-	        else {
-	            return (React.createElement("li", {className: "result", onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave}, React.createElement("img", {className: "result__img", width: this.props.data.images.fixed_height_still.width, height: this.props.data.images.fixed_height_still.height, src: this.props.data.images.fixed_height_still.url})));
-	        }
+	        const showAndPlayVideo = (this.props.autoplay && this.onVideoLoaded) || this.state.hover;
+	        const videoStyle = {
+	            visibility: showAndPlayVideo ? "visible" : "hidden"
+	        };
+	        const imgStyle = {};
+	        const video = () => React.createElement("video", {autoPlay: true, loop: true, className: "result__video", style: videoStyle, onLoadedData: this.onVideoLoaded, width: this.props.data.images.fixed_height.width, height: this.props.data.images.fixed_height.height, src: this.props.data.images.fixed_height.mp4});
+	        const img = () => React.createElement("img", {className: "result__img", style: imgStyle, width: this.props.data.images.fixed_height_still.width, height: this.props.data.images.fixed_height_still.height, src: this.props.data.images.fixed_height_still.url});
+	        return (React.createElement("li", {className: "result", onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave}, showAndPlayVideo ? video() : null, img()));
 	    }
 	}
 	exports.Result = Result;

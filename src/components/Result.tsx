@@ -8,7 +8,8 @@ export interface ResultState {
 }
 
 export interface ResultProps {
-    data: Gif
+    data: Gif,
+    autoplay: boolean
 }
 
 export class Result extends React.Component<ResultProps, ResultState> {
@@ -47,22 +48,34 @@ export class Result extends React.Component<ResultProps, ResultState> {
     }
 
     render() {
-        if (this.state.hover) {
-            let style = {
-                visibility: this.state.videoLoaded ? "visible" : "hidden"
-            }
-            console.log(style)
-            return (
-                <li className="result" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} style={style} >
-                    <video autoPlay loop className="result__video" onLoadedData={this.onVideoLoaded} width={this.props.data.images.fixed_height.width} height={this.props.data.images.fixed_height.height} src={this.props.data.images.fixed_height.mp4}></video>
-                </li>
-            )
-        } else {
-            return (
-                <li className="result" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-                    <img className="result__img" width={this.props.data.images.fixed_height_still.width} height={this.props.data.images.fixed_height_still.height} src={this.props.data.images.fixed_height_still.url}></img>
-                </li>
-            )
+        const showAndPlayVideo = (this.props.autoplay && this.onVideoLoaded) || this.state.hover
+        const videoStyle = {
+            visibility: showAndPlayVideo ? "visible" : "hidden"
         }
+
+        const imgStyle = {
+        }
+
+        const video = () => 
+            <video autoPlay loop className="result__video" 
+                style={videoStyle}
+                onLoadedData={this.onVideoLoaded} 
+                width={this.props.data.images.fixed_height.width} 
+                height={this.props.data.images.fixed_height.height} 
+                src={this.props.data.images.fixed_height.mp4}></video>
+
+        const img = () => 
+            <img className="result__img" 
+                style={imgStyle}
+                width={this.props.data.images.fixed_height_still.width} 
+                height={this.props.data.images.fixed_height_still.height} 
+                src={this.props.data.images.fixed_height_still.url}></img>
+        
+        return (
+            <li className="result" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                { showAndPlayVideo ? video() : null }
+                { img() }
+            </li>
+        )
     } 
 }
